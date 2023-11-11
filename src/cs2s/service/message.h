@@ -76,9 +76,9 @@ public:
     }
 
     template<typename T>
-    void Send(INetworkSerializable* message_type, T* message) const
+    void Send(INetworkSerializable* message_type, T* message, int client_count = -1, const uint64* clients = nullptr) const
     {
-        this->game_event_system->PostEventAbstract(0, false, -1, nullptr, message_type, message, sizeof(T), BUF_RELIABLE);
+        this->game_event_system->PostEventAbstract(0, false, client_count, clients, message_type, message, sizeof(T), BUF_RELIABLE);
     }
 
     void Send(INetworkSerializable* message_type, void* message, IRecipientFilter* recipients) const
@@ -93,10 +93,11 @@ public:
     }
 
     void SendText(int target, const char* text) const;
+    void SendText(int target, const char* text, int player_slot) const;
     void SendText(int target, const char* text, IRecipientFilter* recipients) const;
 
     template<typename... Args>
-    void Print(CEntityInstance* player, int hud, const char* fmt, Args&& ... args) const
+    void Print(int player_slot, int hud, const char* fmt, Args&& ... args) const
     {
         std::string buffer;
         if (!format(buffer, fmt, std::forward<Args>(args)...))
@@ -105,14 +106,12 @@ public:
             return;
         }
 
-        // TODO: recipient filter
-        this->SendText(hud, buffer.c_str());
+        this->SendText(hud, buffer.c_str(), player_slot);
     }
 
-    void Print(CEntityInstance* player, int hud, const char* fmt) const
+    void Print(int player_slot, int hud, const char* fmt) const
     {
-        // TODO: recipient filter
-        this->SendText(hud, fmt);
+        this->SendText(hud, fmt, player_slot);
     }
 
     template<typename... Args>

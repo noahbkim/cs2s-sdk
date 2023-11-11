@@ -28,8 +28,8 @@ bool PluginEventService::Load(PluginId id, ISmmAPI* ismm, bool late)
         Log_Error(this->log, LOG_PREFIX "Could not resolve the IGameEventManager2!\n");
         return false;
     }
-    Log_Msg(this->log, LOG_PREFIX "Found IGameEventManager2 at %p\n", this->game_event_manager);
 
+    Log_Msg(this->log, LOG_PREFIX "Found IGameEventManager2 at %p\n", this->game_event_manager);
     return true;
 }
 

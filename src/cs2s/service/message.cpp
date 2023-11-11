@@ -53,6 +53,22 @@ void PluginMessageService::SendText(int target, const char* text) const
     this->Send(message_type, &message);
 }
 
+void PluginMessageService::SendText(int target, const char* text, int player_slot) const
+{
+    INetworkSerializable* message_type = this->network_messages->FindNetworkMessagePartial("TextMsg");
+    if (!message_type)
+    {
+        Log_Error(this->log, LOG_PREFIX "Could not resolve message type TextMsg\n");
+        return;
+    }
+
+    CUserMessageTextMsg message;
+    message.set_dest(target);
+    message.add_param(text);
+    uint64 clients = 1 << player_slot;  // Seems to be different than uint64_t on some platforms
+    this->Send(message_type, &message, ABSOLUTE_PLAYER_LIMIT, &clients);  // TODO why
+}
+
 void PluginMessageService::SendText(int target, const char* text, IRecipientFilter* recipients) const
 {
     INetworkSerializable* message_type = this->network_messages->FindNetworkMessagePartial("TextMsg");

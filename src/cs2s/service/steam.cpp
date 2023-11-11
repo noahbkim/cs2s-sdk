@@ -14,34 +14,13 @@ bool PluginSteamService::Load(SourceMM::PluginId id, SourceMM::ISmmAPI* ismm, bo
 
 bool PluginSteamService::Unload()
 {
-    if (this->steam_api_loaded)
+    if (this->steam_api_initialized)
     {
         this->steam_api.Clear();
-        this->steam_api_loaded = false;
+        this->steam_api_initialized = false;
     }
 
     return true;
-}
-
-CSteamGameServerAPIContext* PluginSteamService::Get()
-{
-    // We want to avoid hooking `GameServerSteamAPIActivated` to know when
-    // the API is available, so we check every time instead.
-    if (!this->steam_api_loaded)
-    {
-        this->steam_api_loaded = this->steam_api.Init();
-    }
-
-    // Something something `std::optional`...
-    if (this->steam_api_loaded)
-    {
-        return &this->steam_api;
-    }
-    else
-    {
-        Log_Warning(this->log, LOG_PREFIX "The Steam API is currently unavailable!\n");
-        return nullptr;
-    }
 }
 
 }

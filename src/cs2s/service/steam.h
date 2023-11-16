@@ -30,14 +30,16 @@ public:
 private:
     bool Initialize()
     {
-        this->steam_api_initialized = this->steam_api.Init();
+        if (!this->steam_api_initialized)
+        {
+            this->steam_api_initialized = this->steam_api.Init();
+        }
+
         return this->steam_api_initialized;
     }
 
 public:
-    // We do not want to return a pointer to the
     [[nodiscard]] CSteamGameServerAPIContext* Get() { return this->Initialize() ? &this->steam_api : nullptr; }
-
     [[nodiscard]] ISteamClient* GetSteamClient() { return this->Initialize() ? this->steam_api.SteamClient() : nullptr; }
     [[nodiscard]] ISteamGameServer* GetSteamGameServer() { return this->Initialize() ? this->steam_api.SteamGameServer() : nullptr; }
     [[nodiscard]] ISteamUtils* GetSteamGameServerUtils() { return this->Initialize() ? this->steam_api.SteamGameServerUtils() : nullptr; }
